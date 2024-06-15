@@ -5,7 +5,7 @@
 ## 目录
 
 - [深度学习概述]()
-- [损失函数篇](DeepLearningBasicsWarehouse/Loss/README.md)
+- [损失函数篇](Loss/README.md)
 
 ## 更新进展
 
