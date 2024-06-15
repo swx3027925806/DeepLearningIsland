@@ -86,6 +86,8 @@ $$
 
 在PyTorch中，交叉熵损失函数可以通过`nn.CrossEntropyLoss()`来使用，但如果你想要从底层实现，可以参考以下代码：
 
+ -[cross_entropy_loss.py](cross_entropy_loss.py)
+
 ```python
 import torch
 import torch.nn as nn
@@ -164,6 +166,8 @@ MSE Loss 在这些场景中有广泛应用的原因在于，回归任务通常�
 ### 2.1.3 代码实现
 
 在 PyTorch 中，MSE Loss 可以通过 `torch.nn.MSELoss()` 直接调用。然而，如果你想从底层实现这个损失函数，可以使用以下代码示例：
+
+- [mse_loss.py](mse_loss.py)
 
 ```python
 import torch
