@@ -6,6 +6,13 @@
 
 - [深度学习概述]()
 - [损失函数篇](Loss/README.md)
+- [正则化篇](regularization/README.md)
+- [网络结构篇](network/README.md)
+- [归一化层篇](normalization/README.md)
+- [激活函数篇](activation/README.md)
+- [优化器篇](optimizer/README.md)
+- [数据处理篇](data_processing/README.md)
+- [模型评估篇](evaluation/README.md)
 
 ## 更新进展
 
