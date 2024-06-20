@@ -73,7 +73,7 @@ class SimpleRNN(nn.Module):
         return out
     
 
-# Acc: 0.9578
+# Acc: 0.9497
 class SimpleLSTM(nn.Module):
     def __init__(self, hidden_size, output_size, num_layers):
         super(SimpleLSTM, self).__init__()
@@ -88,8 +88,27 @@ class SimpleLSTM(nn.Module):
         # 压平特征
         b, c, h, w = x.size()
         x = torch.reshape(x, (b, c, -1)).transpose(1, 0)
-        # RNN处理特征
         out, _ = self.lstm(x)
+        out = self.fc(out[-1, :, :])
+        return out
+    
+
+# Acc: 0.9583
+class SimpleGRU(nn.Module):
+    def __init__(self, hidden_size, output_size, num_layers):
+        super(SimpleGRU, self).__init__()
+        self.hidden_size = hidden_size
+        self.cnn = nn.Conv2d(1, 32, kernel_size=4, stride=4)
+        self.gru = nn.GRU(49, hidden_size, num_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_size, output_size)
+
+    def forward(self, x):
+        # CNN提取特征
+        x = self.cnn(x)        # [b, 1, 28, 28] -> [b, 16, 7, 7]
+        # 压平特征
+        b, c, h, w = x.size()
+        x = torch.reshape(x, (b, c, -1)).transpose(1, 0)
+        out, _ = self.gru(x)
         out = self.fc(out[-1, :, :])
         return out
 
@@ -128,7 +147,8 @@ if __name__ == '__main__':
     # model = MLP(input_size=28*28, hidden_size=500, output_size=10)
     # model = SimpleCNN()
     # model = SimpleRNN(hidden_size=128, output_size=10, num_layers=1)
-    model = SimpleLSTM(hidden_size=128, output_size=10, num_layers=1)
+    # model = SimpleLSTM(hidden_size=128, output_size=10, num_layers=1)
+    model = SimpleGRU(hidden_size=128, output_size=10, num_layers=1)
     # summary(model, (1, 28, 28))
     # 设置损失函数和优化器
     criterion = nn.CrossEntropyLoss()

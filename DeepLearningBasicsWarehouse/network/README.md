@@ -263,7 +263,7 @@ Sepp Hochreiter 和 Jürgen Schmidhuber 在1997年的论文《Long Short-Term Me
 
 #### 2.4.2 结构详细介绍
 
-![alt text](image-3.png)
+![alt text](./image-3.png)
 
 LSTM是一种特殊的RNN，它通过引入额外的结构来解决上述问题，特别是为了更好地处理长期依赖。LSTM的核心是记忆单元（cell state），它通过“门控”机制控制信息的流动，包括遗忘门、输入门和输出门。
 
@@ -342,9 +342,77 @@ GRU，即门控循环单元，是在2014年由KyungHyun Cho等人在论文《Lea
 
 在GRU被提出之前，LSTM已经成为处理序列数据和解决循环神经网络（RNN）中梯度消失或爆炸问题的有效解决方案。然而，LSTM的复杂性，尤其是其内部的三个门（遗忘门、输入门、输出门）和记忆单元，使得模型的训练和推理变得更加复杂和计算密集。此外，LSTM的参数数量相对较多，这可能导致训练时间较长，尤其是在大规模数据集上。
 
+GRU的提出主要是为了克服LSTM的这些局限性，具体目标包括：
+
+1. 简化模型结构：GRU通过**合并LSTM的输入门和遗忘门为一个更新门**，以及移除独立的记忆单元，简化了模型结构。这样可以减少参数的数量，降低计算成本，同时保持处理长期依赖的能力。
+2. 提高训练效率：由于GRU的结构更简单，训练过程可以更快，这是因为减少了参数数量和计算复杂度。这使得GRU在有限的计算资源下，可以处理更大的数据集或者在相同时间内进行更多的训练迭代。
+3. 平衡性能与复杂性：GRU试图在模型性能和计算复杂性之间找到一个更好的平衡点。虽然它简化了LSTM的一些机制，但仍然保留了门控机制的关键优势，即能够有效地控制信息的流动，从而在许多任务上达到与LSTM相当甚至更好的性能。
+
 #### 2.5.2 结构详细介绍
 
+
+GRU，即门控循环单元，是循环神经网络（RNN）的一种变种，由Cho等人在2014年提出。GRU旨在解决传统RNN在处理长期依赖关系时面临的梯度消失或梯度爆炸问题，同时通过减少门控机制的复杂度，相比于LSTM（Long Short-Term Memory）网络，GRU具有更少的参数和更简单的结构，但依然能够保持处理序列数据的高效性。
+
+##### GRU的内部结构
+
+GRU的内部结构主要包括两个关键的门控机制：
+
+1. **更新门（Update Gate）**：
+   更新门控制着前一时刻的状态信息 $h_{t-1}$ 如何与当前时刻的输入 $x_t$ 相结合，以更新到当前时刻的状态 $h_t$。更新门的输出是一个介于0和1之间的值，它决定了多少旧信息应该被保留，多少新信息应该被加入。更新门的计算公式如下：
+   $$
+   z_t = \sigma(W_z [h_{t-1}, x_t] + b_z)
+   $$
+   其中，$W_z$ 是权重矩阵，$b_z$ 是偏置向量，$\sigma$ 是Sigmoid激活函数。
+
+2. **重置门（Reset Gate）**：
+   重置门的作用是控制前一时刻的状态 $h_{t-1}$ 对当前时刻的新候选状态 $\tilde{h}_t$ 的影响程度。重置门的值越小，前一时刻的状态信息对当前时刻的贡献就越小，反之则贡献更大。重置门的计算公式如下：
+   $$
+   r_t = \sigma(W_r [h_{t-1}, x_t] + b_r)
+   $$
+   同样地，$W_r$ 是权重矩阵，$b_r$ 是偏置向量。
+
+##### 新候选状态（Candidate State）计算
+
+有了重置门的控制，我们可以计算当前时刻的新候选状态 $\tilde{h}_t$：
+$$
+\tilde{h}_t = \tanh(W [r_t \circledast h_{t-1}, x_t] + b)
+$$
+这里，$W$ 是权重矩阵，$b$ 是偏置向量，$\circledast$ 表示元素级别的乘法（Hadamard product），$\tanh$ 是双曲正切激活函数。
+
+##### 更新状态（Updated State）
+
+最后，GRU的当前时刻状态 $h_t$ 是由前一时刻的状态 $h_{t-1}$ 和当前时刻的新候选状态 $\tilde{h}_t$ 经过更新门控制下的线性插值获得的：
+$$
+h_t = (1 - z_t) \circledast h_{t-1} + z_t \circledast \tilde{h}_t
+$$
+
+这样，GRU就能够通过更新门和重置门的协同作用，有效地管理信息的保留和遗忘，以及新信息的整合，从而实现对长期依赖关系的处理。
+
+总结来说，GRU通过两个门控机制简化了LSTM的三个门（输入门、遗忘门、输出门），并且去除了独立的记忆单元，而是直接在隐藏层中进行信息的更新和管理，这使得GRU在保持长短期记忆功能的同时，具有更简洁的结构和更低的计算复杂度。
+
 #### 2.5.3 代码实现 (PyTorch)
+
+```python
+
+class SimpleGRU(nn.Module):
+    def __init__(self, hidden_size, output_size, num_layers):
+        super(SimpleGRU, self).__init__()
+        self.hidden_size = hidden_size
+        self.cnn = nn.Conv2d(1, 32, kernel_size=4, stride=4)
+        self.gru = nn.GRU(49, hidden_size, num_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_size, output_size)
+
+    def forward(self, x):
+        # CNN提取特征
+        x = self.cnn(x)        # [b, 1, 28, 28] -> [b, 16, 7, 7]
+        # 压平特征
+        b, c, h, w = x.size()
+        x = torch.reshape(x, (b, c, -1)).transpose(1, 0)
+        out, _ = self.gru(x)
+        out = self.fc(out[-1, :, :])
+        return out
+
+```
 
 ### 2.6 GNN (图神经网络)
 
