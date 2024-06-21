@@ -113,6 +113,27 @@ class SimpleGRU(nn.Module):
         return out
 
 
+class SimpleTransformer(nn.Module):
+    def __init__(self, output_size, num_layers):
+        super(SimpleTransformer, self).__init__()
+        self.cnn = nn.Conv2d(1, 32, kernel_size=7, stride=7)
+        self.transformer = nn.TransformerEncoder(
+            nn.TransformerEncoderLayer(d_model=16, nhead=4),
+            num_layers=num_layers
+        )
+        self.fc = nn.Linear(16, output_size)
+
+    def forward(self, x):
+        # CNN提取特征
+        x = self.cnn(x)        # [b, 1, 28, 28] -> [b, 16, 7, 7]
+        # 压平特征
+        b, c, h, w = x.size()
+        x = torch.reshape(x, (b, c, -1))
+        out = self.transformer(x)
+        out = self.fc(torch.mean(out, dim=1))
+        return out
+
+
 def train_model(model, criterion, optimizer, train_loader, test_loader, num_epochs=10):
     for epoch in range(num_epochs):
         running_loss = 0.0
@@ -148,7 +169,8 @@ if __name__ == '__main__':
     # model = SimpleCNN()
     # model = SimpleRNN(hidden_size=128, output_size=10, num_layers=1)
     # model = SimpleLSTM(hidden_size=128, output_size=10, num_layers=1)
-    model = SimpleGRU(hidden_size=128, output_size=10, num_layers=1)
+    # model = SimpleGRU(hidden_size=128, output_size=10, num_layers=1)
+    model = SimpleTransformer(output_size=10, num_layers=2)
     # summary(model, (1, 28, 28))
     # 设置损失函数和优化器
     criterion = nn.CrossEntropyLoss()
