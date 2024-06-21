@@ -263,7 +263,7 @@ Sepp Hochreiter 和 Jürgen Schmidhuber 在1997年的论文《Long Short-Term Me
 
 #### 2.4.2 结构详细介绍
 
-![alt text](./image-3.png)
+![alt text](./DeepLearningBasicsWarehouse/network/image-3.png)
 
 LSTM是一种特殊的RNN，它通过引入额外的结构来解决上述问题，特别是为了更好地处理长期依赖。LSTM的核心是记忆单元（cell state），它通过“门控”机制控制信息的流动，包括遗忘门、输入门和输出门。
 
@@ -482,7 +482,7 @@ GNN的核心思想是消息传递（Message Passing）。在每一层（迭代�
 
 #### 2.7.2 结构详细介绍
 
-![transformer](image-4.png)
+![transformer](./image-4.png)
 
 Transformer模型是一种革命性的深度学习架构，主要用于处理序列数据，尤其在自然语言处理（NLP）领域取得了巨大成功。它摒弃了传统的循环神经网络（RNN）和卷积神经网络（CNN）的局限性，引入了自注意力机制（self-attention mechanism），允许模型并行处理序列中的所有元素，同时捕捉到长距离的依赖关系。下面我将详细解释Transformer的结构和原理。
 
