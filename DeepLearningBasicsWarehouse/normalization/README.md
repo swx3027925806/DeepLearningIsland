@@ -46,16 +46,17 @@ Batch Normalization的原理包括以下几个步骤：
 
 BN的公式可以表示为：
 
-```math
+$$
 \hat{x} = \frac{x - \mu}{\sqrt{\sigma^2 + \epsilon}}
-```
+$$
 
 其中，$x$ 是mini-batch中某个元素的原始输出，$\mu$ 和 $\sigma^2$ 分别是该mini-batch的均值和方差，$\epsilon$ 是一个小的常数，用于数值稳定性，$\hat{x}$ 是归一化后的输出。
 
 最终输出为：
-```math
+
+$$
 y = \gamma \hat{x} + \beta
-```
+$$
 
 ### 3.1.3 代码实现
 
@@ -102,25 +103,25 @@ Layer Normalization的基本思想是在每个训练样本的所有特征上进�
 
 归一化公式如下：
 
-```math
+$$
 \mu = \frac{1}{N}\sum_{i=1}^{N} x_i
-```
+$$
 
-```math
+$$
 \sigma^2 = \frac{1}{N}\sum_{i=1}^{N} (x_i - \mu)^2
-```
+$$
 
-```math
+$$
 \hat{x}_i = \frac{x_i - \mu}{\sqrt{\sigma^2 + \epsilon}}
-```
+$$
  
 其中，$x_i$  表示样本中的第 $i$ 个特征，$\mu$ 和 $\sigma^2$ 分别是特征的均值和方差，$\hat{x}_i$ 是归一化后的特征值，$\epsilon$ 是一个小的常数，用于防止除法时分母为零的情况。
 
 接下来，LN也会使用可学习的缩放参数 $\gamma$ 和偏移参数$\beta$ 来调整归一化后的特征：
 
-```math
+$$
 y_i = \gamma \hat{x}_i + \beta
-```
+$$
 
 ### 3.2.3 代码实现
 
@@ -175,17 +176,17 @@ Instance Normalization的核心思想是保持每个样本内部的统计一致�
 
 数学上，如果 $x$ 是特征图的一个像素点，则其归一化后的值 $\hat{x}$ 为：
 
-```math
+$$
 \hat{x} = \frac{x - \mu}{\sqrt{\sigma^2 + \epsilon}}
-```
+$$
 
 其中， $\mu$ 和 $\sigma^2$ 分别是特征图的均值和方差， $\epsilon$ 是一个小的常数，用于数值稳定性。
 
 最终的输出为：
 
-```math
+$$
 y = \gamma \hat{x} + \beta
-```
+$$
 
 ### 3.3.3 代码实现
 
@@ -228,7 +229,7 @@ Group Normalization（GN）是一种旨在克服Batch Normalization（BN）在�
 
 ### 3.4.2 原理介绍
 
-Group Normalization的基本思想是在每层的输出中将特征图分成若干个组，并在每个组内进行归一化操作。具体而言，假设我们有一个输入张量 $X$ ，它的维度是```N \times C \times H \times W```，其中 $N$ 是批量大小， $C$ 是通道数，而 $H$ 和 $W$ 分别代表高度和宽度。GN首先将 $C$ 个通道分成 $G$ 个组，然后对每个组内的所有通道进行归一化处理。
+Group Normalization的基本思想是在每层的输出中将特征图分成若干个组，并在每个组内进行归一化操作。具体而言，假设我们有一个输入张量 $X$ ，它的维度是$$N \times C \times H \times W$$，其中 $N$ 是批量大小， $C$ 是通道数，而 $H$ 和 $W$ 分别代表高度和宽度。GN首先将 $C$ 个通道分成 $G$ 个组，然后对每个组内的所有通道进行归一化处理。
 
 对于每一个组 $g$ ，GN计算该组所有通道的均值 $\mu_g$ 和方差 $\sigma^2_g$ ，然后对组内的每个通道应用归一化公式。归一化后的特征图再乘以可学习的缩放参数 $\gamma$ 并加上偏移参数 $\beta$ ，这两个参数的维度是 $C$ ，即与输入的通道数相同。
 
@@ -283,15 +284,19 @@ RMS Normalization的核心思想是使用输入的平方根均值（RMS）来归
 4. 最后，使用可学习的缩放参数 $\rho$ 对归一化后的输出进行调整。
 
 归一化公式如下所示：
-```math
+
+$$
 \text{RMS} = \sqrt{\frac{1}{N}\sum_{i=1}^{N} x_i^2}
-```
-```math
+$$
+
+$$
 \hat{x}_i = \frac{x_i}{\text{RMS} + \epsilon}
-```
-```math
+$$
+
+$$
 y_i = \rho \hat{x}_i
-```
+$$
+
 其中， $\epsilon$ 是一个很小的常数，用于防止除以零的情况发生。
 
 ### 3.5.3 代码实现
