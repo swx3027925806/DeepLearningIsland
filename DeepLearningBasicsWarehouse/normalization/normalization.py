@@ -91,18 +91,16 @@ class InstanceNorm(nn.Module):
         return x_hat * self.weight + self.bias
 
 
-class RMSNorm(nn.Module):
-    def __init__(self, num_features, eps=1e-5, momentum=0.1):
-        super(RMSNorm, self).__init__()
-        self.num_features = num_features
-        self.eps = eps
-        self.momentum = momentum
 
-        self.weight = nn.Parameter(torch.ones(1, num_features, 1, 1))
-        self.bias = nn.Parameter(torch.zeros(1, num_features, 1, 1))
-        
-    def forward(self, x):
-        batch_var = x.var(dim=(0, 2, 3), keepdim=True)
-        
-        x_hat = x / torch.sqrt(batch_var + self.eps)
-        return x_hat * self.weight + self.bias
+class RMSNorm(nn.Module):
+  def __init__(self, hidden_size: int, eps: float = 1e-6) -> None:
+    super().__init__()
+    self.eps = eps
+    self.weight = nn.Parameter(torch.ones(hidden_size))
+  
+  def _norm(self, hidden_states):
+    variance = hidden_states.pow(2).mean(-1, keepdim=True)
+    return hidden_states * torch.rsqrt(variance + self.eps)
+  
+  def forward(self, hidden_states):
+    return self.weight * self._norm(hidden_states.float()).type_as(hidden_states)
