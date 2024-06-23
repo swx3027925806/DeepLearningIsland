@@ -10,5 +10,5 @@
 
 | 章节 | 进度 | 更新日期 | 最近更新 |
 | :---: | :---: | :---: | :---: |
-| [DeepLearningBasicsWarehouse](DeepLearningBasicsWarehouse/README.md) | 创作中 | 2024-06-15 | 损失函数篇 |
+| [DeepLearningBasicsWarehouse](DeepLearningBasicsWarehouse/README.md) | 创作中 | 2024-06-23 | 归一化层篇 |
 

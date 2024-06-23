@@ -263,7 +263,7 @@ Sepp Hochreiter 和 Jürgen Schmidhuber 在1997年的论文《Long Short-Term Me
 
 #### 2.4.2 结构详细介绍
 
-![alt text](./DeepLearningBasicsWarehouse/network/image-3.png)
+![alt text](./image-3.png)
 
 LSTM是一种特殊的RNN，它通过引入额外的结构来解决上述问题，特别是为了更好地处理长期依赖。LSTM的核心是记忆单元（cell state），它通过“门控”机制控制信息的流动，包括遗忘门、输入门和输出门。
 
