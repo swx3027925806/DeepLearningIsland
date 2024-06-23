@@ -81,7 +81,7 @@ $$
 w := w - \alpha \frac{\partial J}{\partial w}
 $$
 
-其中  $\alpha$ 是学习率。而在L2正则化下，权重更新规则变为：
+其中  $`\alpha`$ 是学习率。而在L2正则化下，权重更新规则变为：
 
 $$
 w := w - \alpha \left( \frac{\partial J}{\partial w} + 2\lambda w \right)
